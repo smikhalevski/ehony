@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+┌──┐
+|  |
+|Eh|ony
+└──┘
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:osgi="http://www.springframework.org/schema/osgi"
+       xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                           http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
+                           http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
+
+    <bean id="properties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="location" value="classpath:default.properties"/>
+        <property name="properties">
+            <osgix:cm-properties persistent-id="org.ehony.pax.jmsappender"/>
+        </property>
+        <property name="localOverride" value="true"/>
+    </bean>
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="ignoreUnresolvablePlaceholders" value="false"/>
+        <property name="properties" ref="properties"/>
+    </bean>
+
+    <bean id="jmsAppender" class="org.ehony.pax.JmsAppender" init-method="connect" destroy-method="disconnect">
+        <property name="threshold" value="${jms.failover.threshold}"/>
+        <property name="bufferFlushPeriod" value="${jms.failover.bufferFlushPeriod}"/>
+        <property name="failoverManaged" value="${jms.failover.managed}"/>
+        <property name="transacted" value="${jms.session.transacted}"/>
+        <property name="acknowledgeMode" value="${jms.session.acknowledge}"/>
+        <property name="destinationType" value="${jms.destination.type}"/>
+        <property name="deliveryMode" value="${appender.delivery}"/>
+        <property name="subject" value="${jms.destination.name}"/>
+        <property name="contextProperties" ref="properties"/>
+    </bean>
+    <osgi:service ref="jmsAppender" interface="org.ops4j.pax.logging.spi.PaxAppender">
+        <osgi:service-properties>
+            <entry key="org.ops4j.pax.logging.appender.name" value="${osgi.service.name}"/>
+        </osgi:service-properties> 
+    </osgi:service>
+    
+</beans>
