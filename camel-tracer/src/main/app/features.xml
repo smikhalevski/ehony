@@ -6,10 +6,14 @@
 └──┘
 -->
 <features name="org.ehony">
+
+    <repository>mvn:org.apache.camel.karaf/apache-camel/${org.apache.camel.version}/xml/features</repository>
+
     <feature name="${project.groupId}.${project.artifactId}" version="${project.version}">
         <feature version="${org.apache.camel.version}">camel-core</feature>
         <bundle start="start">mvn:org.apache.commons/commons-lang3/${org.apache.commons-lang.version}</bundle>
         <bundle start="start">wrap:mvn:com.google.code.gson/gson/${com.google.code.gson.version}</bundle>
+
         <bundle start="start">mvn:${project.groupId}/${project.artifactId}/${project.version}</bundle>
     </feature>
 </features>

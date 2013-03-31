@@ -24,10 +24,10 @@
         <org.apache.felix.maven-bundle-plugin.version>2.3.4</org.apache.felix.maven-bundle-plugin.version>
         <org.codehaus.mojo.build-helper-maven-plugin.version>1.7</org.codehaus.mojo.build-helper-maven-plugin.version>
 
+        <org.apache.felix.version>3.0.9</org.apache.felix.version>
         <org.apache.camel.version>2.9.0</org.apache.camel.version>
         <org.apache.commons-lang.version>3.1</org.apache.commons-lang.version>
         <com.google.code.gson.version>2.1</com.google.code.gson.version>
-        <org.apache.felix.version>3.0.9</org.apache.felix.version>
         <org.slf4j.version>1.6.1</org.slf4j.version>
         <org.apache.log4j.version>1.2.16</org.apache.log4j.version>
     </properties>
@@ -58,20 +58,16 @@
                             org.ehony*;version="${project.version}"
                         </Export-Package>
                         <Import-Package>
-                             org.apache.camel*;version="${org.apache.camel.version}"
-                            ,com.google.gson*;version="${com.google.code.gson.version}"
-                            ,org.apache.commons.lang3*;version="${org.apache.commons-lang.version}"
-                            ,org.apache.log4j*
-                            ,org.slf4j*
-                            ,org.osgi.framework*
-                            *
+                              org.apache.camel*;version="${org.apache.camel.version}"
+                            , com.google.gson*;version="${com.google.code.gson.version}"
+                            , org.apache.commons.lang3*;version="${org.apache.commons-lang.version}"
+                            , org.apache.log4j*
+                            , org.slf4j*
+                            , org.osgi.framework*
+                              *
                         </Import-Package>
                         <Bundle-Name>${project.groupId}.${project.artifactId}</Bundle-Name>
                         <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
-                        <Embed-Dependency>*;scope=compile|runtime;inline=false;</Embed-Dependency>
-                        <Embed-Transitive>false</Embed-Transitive>
-                        <Embed-Directory>lib</Embed-Directory>
-                        <Embed-StripGroup>true</Embed-StripGroup>
                         <_versionpolicy>"[$(version;==;$(@)),$(version;+0;$(@)))"</_versionpolicy>
                     </instructions>
                 </configuration>
@@ -103,7 +99,15 @@
 
         </plugins>
     </build>
+
     <dependencies>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.framework</artifactId>
+            <version>${org.apache.felix.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-core</artifactId>
@@ -120,12 +124,6 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>${com.google.code.gson.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.framework</artifactId>
-            <version>${org.apache.felix.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
