@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+┌──┐
+|  |
+|Eh|ony
+└──┘
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jms="http://www.springframework.org/schema/jms"
+       xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms-2.5.xsd
+                           http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
+
+    <bean id="properties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="location" value="classpath:default.properties"/>
+        <property name="properties">
+            <osgix:cm-properties persistent-id="org.ehony.mongoappender"/>
+        </property>
+        <property name="localOverride" value="true"/>
+    </bean>
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="ignoreUnresolvablePlaceholders" value="false"/>
+        <property name="properties" ref="properties"/>
+    </bean>
+
+    <bean id="jmsConsumer" class="org.ehony.JmsConsumer">
+        <property name="mongo" ref="mongo"/>
+        <property name="uri" ref="mongoUri"/>
+    </bean>
+
+    <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="${brokerUrl}"/>
+        <property name="exceptionListener" ref="jmsConsumer"/>
+    </bean>
+    <jms:listener-container concurrency="10">
+        <jms:listener destination="${destination}" ref="jmsConsumer"/>
+    </jms:listener-container>
+
+    <bean name="mongoUri" class="com.mongodb.MongoURI">
+        <constructor-arg value="${mongoUri}"/>
+    </bean>
+    <bean name="mongo" class="com.mongodb.Mongo" destroy-method="close">
+        <constructor-arg name="uri" ref="mongoUri"/>
+    </bean>
+
+</beans>
