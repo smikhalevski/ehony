@@ -1,6 +1,6 @@
 # Ehony
 
-Camel Exchange Tracer for OSGi.
+Camel exchange tracer for OSGi.
 
 Install `camel-tracer` feature
 ```bash
